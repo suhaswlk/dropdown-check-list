@@ -254,6 +254,25 @@
                 }
             }
 
+	        // If firstItemIsSingle is true, auto-close dropdown if first item is selected
+	        if (options.firstItemIsSingle) {
+				var firstCheck = allEnabledCheckboxes.filter(":first");
+		        // Proceed only if firstItemValue is false or first item value matches firstItemValue
+		        if ( ! options.firstItemValue || firstCheck.val() == options.firstItemValue)
+		        {
+					// If an option was checked, but isn't the first one, simply uncheck the first option
+					if (senderCheckbox.attr("index") > 0) {
+						firstCheck.attr("checked", false);
+					}
+					// If first option is checked, uncheck all the rest and close dropdown
+					if (firstCheck.attr('checked')) {
+						allEnabledCheckboxes.attr("checked", false);
+						firstCheck.attr("checked", true);
+						self._toggleDropContainer(false);
+					}
+		        }
+	        }
+
             var allCheckboxes = dropWrapper.find("input");
             // do the actual synch with the source select
             var selectOptions = sourceSelect.get(0).options;
@@ -459,6 +478,8 @@
             width: null,
             maxDropHeight: null,
             firstItemChecksAll: false,
+            firstItemIsSingle: false,
+	        firstItemValue: false,
             minWidth: 50,
             bgiframe: false,
             emptyText: "",
